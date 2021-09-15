@@ -14,16 +14,16 @@ class Post extends Model
 
     // RELACION UNO A MUCHOS INVERSA
     public function user(){
-        $this->belongsTo(User::class);
+        return $this->belongsTo(User::class);
     }
 
     public function category(){
-        $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class);
     }
 
     // RELACION MUCHOS A MUCHOS
     public function tags(){
-        $this->belongsToMany(Tag::class);
+        return $this->belongsToMany(Tag::class);
     }
 
     // RELACION UNO A MUCHOS POLIMORFICA

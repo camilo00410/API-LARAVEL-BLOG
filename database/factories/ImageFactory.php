@@ -2,18 +2,18 @@
 
 namespace Database\Factories;
 
-use App\Models\Tag;
+use App\Models\Image;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
-class TagFactory extends Factory
+
+class ImageFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Tag::class;
+    protected $model = Image::class;
 
     /**
      * Define the model's default state.
@@ -22,11 +22,8 @@ class TagFactory extends Factory
      */
     public function definition()
     {
-        $name = $this->faker->unique()->word(20);
-
         return [
-            'name' => $name,
-            'slug' => Str::slug($name)
+            'url' => 'posts/' . $this->faker->image('public/storage/posts', 640, 480, null, false)
         ];
     }
 }
