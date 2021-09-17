@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
+use App\Http\Resources\CategoryResource;
+
 class CategoryController extends Controller
 {
     /**
@@ -15,7 +17,12 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $categories = Category::included()
+                        ->filter()
+                        ->sort()
+                        ->getOrPaginate();
+                        // ->get();
+        return CategoryResource::collection($categories);
     }
 
     /**
@@ -26,7 +33,14 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|max:255',
+            'slug' => 'required|max:255|unique:categories',
+        ]);
+
+        $category = Category::create($request->all());
+
+        return CategoryResource::make($category);
     }
 
     /**
@@ -35,9 +49,14 @@ class CategoryController extends Controller
      * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function show(Category $category)
+    public function show($id)
     {
-        //
+        // $category = Category::with('posts', 'relacion2')->findOrFail($id);
+        // $category = Category::with('posts.user')->findOrFail($id);
+
+        $category = Category::included()->findOrFail($id);
+        // return new CategoryResource($category);
+        return CategoryResource::make($category);
     }
 
     /**
@@ -49,7 +68,14 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        //
+        $request->validate([
+            'name' => 'required|max:255',
+            'slug' => 'required|max:255|unique:categories,slug,' . $category->id,
+        ]);
+
+        $category->update($request->all());
+
+        return CategoryResource::make($category);
     }
 
     /**
@@ -60,6 +86,8 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        $category->delete();
+        
+        return CategoryResource::make($category);
     }
 }
